@@ -5,18 +5,31 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useState } from "react";
 import GameScreen from "./screens/GameScreen";
 import Colors from "./constants/colors";
+import GameOverScreen from "./screens/GameOverScreen";
 
 export default function App() {
   const [userNumber, setUserNumber] = useState();
+  const [gameIsOver, setGameIsOver] = useState(true);
 
   function pickedNumberHandler(pickedNumber) {
     setUserNumber(pickedNumber);
+    setGameIsOver(false);
+    // These two updates will be batched together by React.
+    // So the component is not re-rendered twice, but only once.
+  }
+  function gameOverHandler() {
+    setGameIsOver(true);
   }
 
   let screen = <StartGame onPickedNumber={pickedNumberHandler} />;
   if (userNumber) {
-    screen = <GameScreen />;
+    screen = <GameScreen userNumber={userNumber} onGameOver={gameOverHandler} />;
   }
+
+  if(gameIsOver && userNumber){
+    screen = <GameOverScreen />
+  }
+
   return (
     <LinearGradient colors={[Colors.primary700, Colors.accent500]} style={styles.rootScreen}>
       <ImageBackground
