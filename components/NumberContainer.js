@@ -20,8 +20,8 @@ const styles = StyleSheet.create({
         margin: 24
     },
     numberText: {
+        fontFamily: 'open-sans-bold',
         color: Colors.accent500,
-        fontSize: 30,
-        fontWeight: "bold"
+        fontSize: 30
     }
 })

@@ -6,11 +6,22 @@ import { useState } from "react";
 import GameScreen from "./screens/GameScreen";
 import Colors from "./constants/colors";
 import GameOverScreen from "./screens/GameOverScreen";
+import { useFonts } from "expo-font";
+import AppLoading from "expo-app-loading";
 
 export default function App() {
   const [userNumber, setUserNumber] = useState();
   const [gameIsOver, setGameIsOver] = useState(true);
+  const [guessRounds, setGuessRounds] = useState(0);
 
+  // In this useFonts object, you must set property names that will later be used for identifying the fonts you loaded and values for these property names that point to these files that should be loaded.
+  const [fontsLoaded] = useFonts({
+    'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
+    'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf')
+  })
+  if(!fontsLoaded){
+    return <AppLoading />
+  }
   function pickedNumberHandler(pickedNumber) {
     setUserNumber(pickedNumber);
     setGameIsOver(false);
@@ -20,6 +31,10 @@ export default function App() {
   function gameOverHandler() {
     setGameIsOver(true);
   }
+  function startNewGameHandler(){
+    setUserNumber(null);
+    setGuessRounds(0);
+  }
 
   let screen = <StartGame onPickedNumber={pickedNumberHandler} />;
   if (userNumber) {
@@ -27,7 +42,7 @@ export default function App() {
   }
 
   if(gameIsOver && userNumber){
-    screen = <GameOverScreen />
+    screen = <GameOverScreen userNumber={userNumber} roundsNumber={guessRounds} onStartNewGame={startNewGameHandler} />
   }
 
   return (
